@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/locationicon"
+                android:layout_marginTop="6dp" />
+
+            <TextView
+                android:id="@+id/idTVSudiyuanOrderAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="#777777"
+                android:textSize="20sp"
+                android:text="成都市高新区天府软件园C区" />
+        </LinearLayout>
+
+         <TextView
+                android:id="@+id/idTVSudiyuanOrderDateTime"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textColor="#c6c6c6"
+                android:textSize="20sp"
+                android:text="2014年4月4日         16:08" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_weight="2"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/newmessageicon"
+            android:id="@+id/idTvSudiyuanHasNewMessage"/>
+         <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/detailarrow"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="6dp"/>
+    </LinearLayout>
+
+</LinearLayout>

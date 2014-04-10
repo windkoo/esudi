@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="#f9f9f9">
+
+   <TextView
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
+        android:text="2014年4月4日     16:08"
+        android:textColor="#777777"
+        android:textSize="20sp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:id="@+id/idTVUserOrderDateTime" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_weight="2"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/newmessageicon"
+            android:id="@+id/idTvUserHasNewMessage"/>
+         <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/detailarrow"
+            android:layout_marginRight="30dp"/>
+    </LinearLayout>
+
+</LinearLayout>
