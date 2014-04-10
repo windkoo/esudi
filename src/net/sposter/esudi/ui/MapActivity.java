@@ -1,5 +1,7 @@
 package net.sposter.esudi.ui;
 
+import java.util.ArrayList;
+
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.map.ItemizedOverlay;
 import com.baidu.mapapi.map.LocationData;
@@ -12,6 +14,9 @@ import com.baidu.platform.comapi.basestruct.GeoPoint;
 import net.sposter.esudi.R;
 import net.sposter.esudi.R.layout;
 import net.sposter.esudi.data.ConstData;
+import net.sposter.esudi.data.HttpDataModel.Sudiyuan;
+import net.sposter.esudi.data.HttpDataModel.Sudiyuan.SudiyuanInfo;
+import net.sposter.esudi.data.HttpRequestParams.MyLocation;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -36,8 +41,6 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.BDNotifyListener;
-//¼ÙÈçÓÃµ½Î»ÖÃÌáÐÑ¹¦ÄÜ£¬ÐèÒªimport¸ÃÀà
-//Èç¹ûÊ¹ÓÃµØÀíÎ§À¸¹¦ÄÜ£¬ÐèÒªimportÈçÏÂÀà
 import com.baidu.location.BDGeofence;
 import com.baidu.location.BDLocationStatusCodes;
 import com.baidu.location.GeofenceClient;
@@ -45,6 +48,13 @@ import com.baidu.location.GeofenceClient.OnAddBDGeofencesResultListener;
 import com.baidu.location.GeofenceClient.OnGeofenceTriggerListener;
 import com.baidu.location.GeofenceClient.OnRemoveBDGeofencesResultListener;
 import com.baidu.location.LocationClientOption.LocationMode;
+import com.litesuits.http.LiteHttpClient;
+import com.litesuits.http.async.HttpAsyncExcutor;
+import com.litesuits.http.exception.HttpException;
+import com.litesuits.http.request.Request;
+import com.litesuits.http.request.param.HttpParam;
+import com.litesuits.http.response.Response;
+import com.litesuits.http.response.handler.HttpModelHandler;
 
 @SuppressLint("NewApi")
 @SuppressWarnings("unused")
@@ -68,6 +78,13 @@ public class MapActivity extends Activity implements OnClickListener {
 	private SharedPreferences userInfo;
 	private int userLog;
 	private int userType;
+	
+	private LiteHttpClient client;
+	private HttpAsyncExcutor asyncExcutor = new HttpAsyncExcutor();
+	
+	private double userLat=0.0;
+	private double userLon=0.0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,25 +109,24 @@ public class MapActivity extends Activity implements OnClickListener {
 		llUserLogout.setOnClickListener(this);
 		llUserHistoryOrders.setOnClickListener(this);
 		
-		mLocationClient = new LocationClient(getApplicationContext()); // ÉùÃ÷LocationClientÀà
-		mLocationClient.registerLocationListener(myListener); // ×¢²á¼àÌýº¯Êý
+		mLocationClient = new LocationClient(getApplicationContext()); // ï¿½ï¿½ï¿½ï¿½LocationClientï¿½ï¿½
+		mLocationClient.registerLocationListener(myListener); // ×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 		mMapView = (MapView) findViewById(R.id.bmapsView);
 		mMapView.setBuiltInZoomControls(true);
-		// ÉèÖÃÆôÓÃÄÚÖÃµÄËõ·Å¿Ø¼þ
+
 		mMapController = mMapView.getController();
-		mMapController.setZoom(15);// ÉèÖÃµØÍ¼zoom¼¶±ð
+		mMapController.setZoom(15);
 
 		LocationClientOption option = new LocationClientOption();
-		option.setLocationMode(LocationMode.Hight_Accuracy);//ÉèÖÃ¶¨Î»Ä£Ê½
+		option.setLocationMode(LocationMode.Hight_Accuracy);
 		option.setOpenGps(true);
-		option.setCoorType("bd09ll");//·µ»ØµÄ¶¨Î»½á¹ûÊÇ°Ù¶È¾­Î³¶È£¬Ä¬ÈÏÖµgcj02
-		option.setScanSpan(10000);//ÉèÖÃ·¢Æð¶¨Î»ÇëÇóµÄ¼ä¸ôÊ±¼äÎª5000ms
-		option.setIsNeedAddress(true);//·µ»ØµÄ¶¨Î»½á¹û°üº¬µØÖ·ÐÅÏ¢
-		option.setNeedDeviceDirect(true);//·µ»ØµÄ¶¨Î»½á¹û°üº¬ÊÖ»ú»úÍ·µÄ·½Ïò
+		option.setCoorType("bd09ll");
+		option.setScanSpan(10000);
+		option.setIsNeedAddress(true);
+		option.setNeedDeviceDirect(true);
 		mLocationClient.setLocOption(option);
-		mLocationClient.start();
-		mLocationClient.requestLocation();
+		
 		
 		userInfo = getSharedPreferences(ConstData.PREFERENCE_FILE_NAME, 0);
 
@@ -121,7 +137,10 @@ public class MapActivity extends Activity implements OnClickListener {
 //		SpannableString spannableString = new SpannableString("TimeToDo");
 //		spannableString.setSpan(new com.masaila.timetodo.font.TypefaceSpan(this, "Roboto-Light.ttf"), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 //		spannableString.setSpan(new AbsoluteSizeSpan(24, true), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		ab.setTitle("ËÙµÝ");
+		ab.setTitle(R.string.title_sudi);
+		
+		
+		client = LiteHttpClient.getInstance(this);
 	}
 
 
@@ -202,6 +221,10 @@ public class MapActivity extends Activity implements OnClickListener {
 			mBMapMan.stop();
 		}
 		super.onPause();
+		
+		if(mLocationClient!=null){
+			mLocationClient.stop();
+		}
 	}
 
 	@Override
@@ -223,6 +246,12 @@ public class MapActivity extends Activity implements OnClickListener {
 			mBMapMan.start();
 		}
 		super.onResume();
+		
+		if(mLocationClient!=null){
+			mLocationClient.start();
+			mLocationClient.requestLocation();
+		}
+
 	}
 
 	public class MyLocationListener implements BDLocationListener {
@@ -230,118 +259,102 @@ public class MapActivity extends Activity implements OnClickListener {
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-
-			
-			MyLocationOverlay myLocationOverlay = new MyLocationOverlay(mMapView);  
-			LocationData locData = new LocationData();  
-			//ÊÖ¶¯½«Î»ÖÃÔ´ÖÃÎªÌì°²ÃÅ£¬ÔÚÊµ¼ÊÓ¦ÓÃÖÐ£¬ÇëÊ¹ÓÃ°Ù¶È¶¨Î»SDK»ñÈ¡Î»ÖÃÐÅÏ¢£¬ÒªÔÚSDKÖÐÏÔÊ¾Ò»¸öÎ»ÖÃ£¬ÐèÒªÊ¹ÓÃ°Ù¶È¾­Î³¶È×ø±ê£¨bd09ll£©  
-			locData.latitude = location.getLatitude();  
-			locData.longitude = location.getLongitude();  
-			locData.direction = 2.0f;  
-			myLocationOverlay.setData(locData);  
-			mMapView.getOverlays().add(myLocationOverlay);  
-		
-			
-			
-			double mLat1 = locData.latitude + 0.01;  
-			double mLon1 = locData.longitude + 0.01;  
-			
-			GeoPoint p1 = new GeoPoint((int) (mLat1 * 1E6), (int) (mLon1 * 1E6));  
-			//×¼±¸overlayÍ¼ÏñÊý¾Ý£¬¸ù¾ÝÊµÇéÇé¿öÐÞ¸´  
-			Drawable mark= getResources().getDrawable(R.drawable.mappinsent);  
-			
-			OverlayItem item1 = new OverlayItem(p1,"item1","item1"); 
-			item1.setMarker(mark);
-			OverlaySudiyuan itemOverlay = new OverlaySudiyuan(mark, mMapView);
-			
-			
-			GeoPoint meGeo = new GeoPoint((int) (locData.latitude * 1E6), (int) (locData.longitude * 1E6));  
-			Drawable markMe= getResources().getDrawable(R.drawable.mappinrecipient);  
-			OverlayItem itemMe = new OverlayItem(meGeo,"itemMe","itemMe"); 
-			itemMe.setMarker(markMe);
-			OverlaySudiyuan itemOverlayMe = new OverlaySudiyuan(markMe, mMapView);
-			
-			
-			mMapView.getOverlays().clear();  
-			mMapView.getOverlays().add(itemOverlay);  
-			mMapView.getOverlays().add(itemOverlayMe);  
-			itemOverlay.addItem(item1);  
-			itemOverlayMe.addItem(itemMe);
-			mMapController.setCenter(meGeo);
-			mMapView.refresh();  
-			mMapView.getController().animateTo(new GeoPoint((int)(locData.latitude*1e6),  
-			(int)(locData.longitude* 1e6)));  
-			
-			
-//			StringBuffer sb = new StringBuffer(256);
-//			sb.append("time : ");
-//			sb.append(location.getTime());
-//			sb.append("\nerror code : ");
-//			sb.append(location.getLocType());
-//			sb.append("\nlatitude : ");
-//			sb.append(location.getLatitude());
-//			sb.append("\nlontitude : ");
-//			sb.append(location.getLongitude());
-//			sb.append("\nradius : ");
-//			sb.append(location.getRadius());
-//			if (location.getLocType() == BDLocation.TypeGpsLocation) {
-//				sb.append("\nspeed : ");
-//				sb.append(location.getSpeed());
-//				sb.append("\nsatellite : ");
-//				sb.append(location.getSatelliteNumber());
-//			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
-//				sb.append("\naddr : ");
-//				sb.append(location.getAddrStr());
-//			}
-//Log.d("tangbiao", sb.toString());
+			mLocationClient.stop();
+			userLat = location.getLatitude(); 
+			userLon = location.getLongitude();  
+			MyLocation params = new MyLocation(userLat, userLon);
+			getSudiyuanLocation(params);
 		}
 
 		public void onReceivePoi(BDLocation poiLocation) {
-			// ½«ÔÚÏÂ¸ö°æ±¾ÖÐÈ¥³ýpoi¹¦ÄÜ
 			if (poiLocation == null) {
 				return;
 			}
-//			StringBuffer sb = new StringBuffer(256);
-//			sb.append("Poi time : ");
-//			sb.append(poiLocation.getTime());
-//			sb.append("\nerror code : ");
-//			sb.append(poiLocation.getLocType());
-//			sb.append("\nlatitude : ");
-//			sb.append(poiLocation.getLatitude());
-//			sb.append("\nlontitude : ");
-//			sb.append(poiLocation.getLongitude());
-//			sb.append("\nradius : ");
-//			sb.append(poiLocation.getRadius());
-//			if (poiLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
-//				sb.append("\naddr : ");
-//				sb.append(poiLocation.getAddrStr());
-//			}
-//			if (poiLocation.hasPoi()) {
-//				sb.append("\nPoi:");
-//				sb.append(poiLocation.getPoi());
-//			} else {
-//				sb.append("noPoi information");
-//			}
-//			Log.d("tangbiao2", sb.toString());
 		}
 	}
 	
 	
 	class OverlaySudiyuan extends ItemizedOverlay<OverlayItem> {  
-	    //ÓÃMapView¹¹ÔìItemizedOverlay  
 	    public OverlaySudiyuan(Drawable mark,MapView mapView){  
 	            super(mark,mapView);  
-	    }  
+	    } 
 	    protected boolean onTap(int index) {  
-	        //ÔÚ´Ë´¦Àíitemµã»÷ÊÂ¼þ  
 	        System.out.println("item onTap: "+index);  
 	        return true;  
 	    }  
 	    public boolean onTap(GeoPoint pt, MapView mapView){  
-	                //ÔÚ´Ë´¦ÀíMapViewµÄµã»÷ÊÂ¼þ£¬µ±·µ»Ø trueÊ±  
 	                super.onTap(pt,mapView);  
 	                return false;  
-	   }  
+	   }
+	}  
+	
+	void getSudiyuanLocation(HttpParam  para){
 
-	}          
+		asyncExcutor.execute(client, 
+				new Request(ConstData.GET_SUDIYUAN_LOCATION_URL, para), 
+				new HttpModelHandler<Sudiyuan>() {
+			protected void onSuccess(Sudiyuan data, Response res) {
+				Log.i("esudi", "User List: " + data);
+
+//				MyLocationOverlay myLocationOverlay = new MyLocationOverlay(mMapView);  
+//				LocationData locData = new LocationData();  
+//				locData.latitude =  userLat;
+//				locData.longitude = userLon;
+//				locData.direction = 2.0f;  
+//				myLocationOverlay.setData(locData);  
+//				mMapView.getOverlays().add(myLocationOverlay);  
+			
+				mMapView.getOverlays().clear();  
+				
+				GeoPoint meGeo = new GeoPoint((int) (userLat * 1E6), (int) (userLon * 1E6));  
+				Drawable markMe= getResources().getDrawable(R.drawable.mappinrecipient);  
+				OverlayItem itemMe = new OverlayItem(meGeo,"itemMe","itemMe"); 
+				itemMe.setMarker(markMe);
+				OverlaySudiyuan itemOverlayMe = new OverlaySudiyuan(markMe, mMapView);
+				
+				itemOverlayMe.addItem(itemMe);
+				mMapView.getOverlays().add(itemOverlayMe);  
+				
+				Drawable mark= getResources().getDrawable(R.drawable.mappinsent);  
+				OverlaySudiyuan itemOverlay = new OverlaySudiyuan(mark, mMapView);
+				
+				double i=0.02;
+				int idd=0;
+				java.util.Random r=new java.util.Random(20); 
+				for(SudiyuanInfo sdy:data.body){
+
+//					double mLat1 = sdy.latitude;  
+//					double mLon1 = sdy.longitude; 
+					double mLat1;  
+					double mLon1;  
+					if(idd%2 == 0){
+						 mLat1 = userLat - r.nextDouble()*i;  
+						 mLon1 = userLon + r.nextDouble()*i;  
+					}else{
+						 mLat1 = userLat + r.nextDouble()*i;  
+						 mLon1 = userLon - r.nextDouble()*i;  
+					}
+					idd++;
+					
+					GeoPoint p1 = new GeoPoint((int) (mLat1 * 1E6), (int) (mLon1 * 1E6));  
+					OverlayItem item = new OverlayItem(p1,sdy.name,sdy.name); 
+					item.setMarker(mark);
+					itemOverlay.addItem(item);  
+				}
+				mMapView.getOverlays().add(itemOverlay);  
+				
+				mMapController.setCenter(meGeo);
+				mMapView.refresh();  
+				mMapView.getController().animateTo(new GeoPoint((int)(userLat*1e6),  
+				(int)(userLon* 1e6)));  
+			}
+
+			@Override
+			protected void onFailure(HttpException e, Response res) {
+				
+			}
+
+		});
+	}
+	
 }

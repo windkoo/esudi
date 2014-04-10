@@ -43,7 +43,7 @@ public class SudiyuanLoginActivity extends Activity implements OnClickListener {
 		ActionBar ab = getActionBar();
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("µÇÂ¼");
+		ab.setTitle("ç™»å½•");
 	}
 	
 	@Override

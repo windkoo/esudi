@@ -37,7 +37,7 @@ public class SudiyuanQiangdanActivity extends Activity implements OnClickListene
 		ActionBar ab = getActionBar();
 //		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("«¿µ•");
+		ab.setTitle("Êä¢Âçï");
 	}
 	
 	

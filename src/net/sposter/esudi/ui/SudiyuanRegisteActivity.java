@@ -28,7 +28,7 @@ public class SudiyuanRegisteActivity extends Activity implements OnClickListener
 		ActionBar ab = getActionBar();
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("注册成为快递员");
+		ab.setTitle("娉ㄥ唽");
 	}
 	@Override
 	public void onClick(View v) {

@@ -28,16 +28,16 @@ public class SudiyuanQiangDanAdapter extends BaseAdapter {
 		OrderData ttt = new OrderData();
 		ttt.OrderID = 123;
 		ttt.OrderState = 0;
-		ttt.OrderCreateDate = "10·ÖÖÓÒÔÇ°";
-		ttt.OrderCreateAddress = "³É¶¼ÊĞÌì¸³Èí¼şÔ°";
-		ttt.OrderDistince = "¾àÀë2¹«Àï";
+		ttt.OrderCreateDate = "10åˆ†é’Ÿä»¥å‰";
+		ttt.OrderCreateAddress = "æˆéƒ½å¤©èµ‹è½¯ä»¶å›­AåŒº";
+		ttt.OrderDistince = "2å…¬é‡Œä»¥å†…";
 		
 		data.add(ttt);
-		ttt.OrderDistince = "¾àÀë3¹«Àï";
+		ttt.OrderDistince = "3å…¬é‡Œä»¥å†…";
 		data.add(ttt);
-		ttt.OrderDistince = "¾àÀë4¹«Àï";
+		ttt.OrderDistince = "4å…¬é‡Œä»¥å†…";
 		data.add(ttt);
-		ttt.OrderDistince = "¾àÀë5¹«Àï";
+		ttt.OrderDistince = "5å…¬é‡Œä»¥å†…";
 		data.add(ttt);
 		
 		this.handler = handler;
@@ -61,7 +61,7 @@ public class SudiyuanQiangDanAdapter extends BaseAdapter {
 		return data.get(index).OrderID;
 	}
 
-	 public final class ListItemView{                //×Ô¶¨Òå¿Ø¼ş¼¯ºÏ     
+	 public final class ListItemView{                //ï¿½Ô¶ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½     
 //         public ImageView imageIcon;     
          public TextView address;     
          public TextView date;   
@@ -71,13 +71,13 @@ public class SudiyuanQiangDanAdapter extends BaseAdapter {
 	 
 	@Override
 	public View getView(int index, View convertView, ViewGroup parent) {
-		LayoutInflater listContainer;   //ÊÓÍ¼ÈİÆ÷¹¤³§
+		LayoutInflater listContainer;   //ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        listContainer = LayoutInflater.from(context); //´´½¨ÊÓÍ¼ÈİÆ÷¹¤³§²¢ÉèÖÃÉÏÏÂÎÄ
+        listContainer = LayoutInflater.from(context); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ListItemView  listItemView = null;   
         if (convertView == null) {
         	listItemView = new ListItemView();
-        	convertView = listContainer.inflate(R.layout.activity_sudiyuan_qiangdan_listitem, null);   //´´½¨list_item.xml²¼¾ÖÎÄ¼şµÄÊÓÍ¼
+        	convertView = listContainer.inflate(R.layout.activity_sudiyuan_qiangdan_listitem, null);   //ï¿½ï¿½ï¿½ï¿½list_item.xmlï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
         	listItemView.address = (TextView)convertView.findViewById(R.id.idTVOrderAddress);
         	listItemView.date = (TextView)convertView.findViewById(R.id.idTVOrderDate);   
         	listItemView.distance = (TextView)convertView.findViewById(R.id.idTVOrderDistince);   

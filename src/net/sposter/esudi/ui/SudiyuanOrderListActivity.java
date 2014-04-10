@@ -32,7 +32,7 @@ public class SudiyuanOrderListActivity extends Activity  implements OnItemClickL
 		ActionBar ab = getActionBar();
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("ÀúÊ·¶©µ¥");
+		ab.setTitle("å†å²è®¢å•");
 	}
 	
 	@Override

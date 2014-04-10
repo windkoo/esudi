@@ -1,7 +1,18 @@
 package net.sposter.esudi.ui;
 
+import com.litesuits.http.LiteHttpClient;
+import com.litesuits.http.async.HttpAsyncExcutor;
+import com.litesuits.http.data.HttpStatus;
+import com.litesuits.http.data.NameValuePair;
+import com.litesuits.http.exception.HttpException;
+import com.litesuits.http.request.Request;
+import com.litesuits.http.request.param.HttpMethod;
+import com.litesuits.http.response.Response;
+import com.litesuits.http.response.handler.HttpResponseHandler;
+
 import net.sposter.esudi.R;
 import net.sposter.esudi.data.ConstData;
+import net.sposter.esudi.data.HttpRequestParams;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -21,7 +32,8 @@ public class UserLoginActivity extends Activity implements OnClickListener {
 	private EditText etPhone;
 	private EditText etCheckPwd;
 	private Button btnReqiureCheckPwd;
-	
+	private LiteHttpClient client;
+	HttpAsyncExcutor asyncExcutor = new HttpAsyncExcutor();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +50,9 @@ public class UserLoginActivity extends Activity implements OnClickListener {
 		ActionBar ab = getActionBar();
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("µÇÂ¼");
+		ab.setTitle("ç™»å½•");
+		
+		client = LiteHttpClient.getInstance(this);
 	}
 
 //	@Override
@@ -58,18 +72,49 @@ public class UserLoginActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if(v == btnUserLogin){
-			etPhone.setText("18682759881");
-			SharedPreferences userInfo = getSharedPreferences(ConstData.PREFERENCE_FILE_NAME, 0);
-			userInfo.edit().putString(ConstData.USER_PHONE, etPhone.getText().toString()).commit();  
-			userInfo.edit().putInt(ConstData.USER_TYPE, ConstData.USER_USER).commit();
-			userInfo.edit().putInt(ConstData.USER_STATE, ConstData.USER_LOGIN).commit();
+			btnUserLogin.setEnabled(false);
 			
-			Intent intent = new Intent();
-			intent.setClass(this, UserSendOrderActivity.class);
-			startActivity(intent);
-			this.finish();
+			
+			Request req = new Request(ConstData.GET_LOGIN_BY_SHORTMSG_URL, 
+					new HttpRequestParams.LogInMsg(etPhone.getText().toString(),
+					etCheckPwd.getText().toString()));
+			btnReqiureCheckPwd.setEnabled(false);
+
+			asyncExcutor.execute(client, req, new HttpResponseHandler() {
+				@Override
+				protected void onSuccess(Response res, HttpStatus status, NameValuePair[] headers) {
+					btnUserLogin.setEnabled(true);
+					SharedPreferences userInfo = getSharedPreferences(ConstData.PREFERENCE_FILE_NAME, 0);
+					userInfo.edit().putString(ConstData.USER_PHONE, etPhone.getText().toString()).commit();  
+					userInfo.edit().putInt(ConstData.USER_TYPE, ConstData.USER_USER).commit();
+					userInfo.edit().putInt(ConstData.USER_STATE, ConstData.USER_LOGIN).commit();
+					
+					Intent intent = new Intent();
+					intent.setClass(UserLoginActivity.this, UserSendOrderActivity.class);
+					startActivity(intent);
+					UserLoginActivity.this.finish();
+				}
+
+				@Override
+				protected void onFailure(Response res, HttpException e) {
+					btnUserLogin.setEnabled(true);
+				}
+			});
 		}else if(v == btnReqiureCheckPwd){
-			
+			Request req = new Request(ConstData.GET_SHOT_MESSAGE_URL, new HttpRequestParams.GetShortMsg(etPhone.getText().toString()));
+			btnReqiureCheckPwd.setEnabled(false);
+
+			asyncExcutor.execute(client, req, new HttpResponseHandler() {
+				@Override
+				protected void onSuccess(Response res, HttpStatus status, NameValuePair[] headers) {
+					btnReqiureCheckPwd.setEnabled(true);
+				}
+
+				@Override
+				protected void onFailure(Response res, HttpException e) {
+					btnReqiureCheckPwd.setEnabled(true);
+				}
+			});
 		}
 	}
 }

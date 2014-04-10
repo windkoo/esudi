@@ -20,16 +20,16 @@ public class UserOrderListAdapter extends BaseAdapter {
 		OrderData ttt = new OrderData();
 		ttt.OrderID = 123;
 		ttt.OrderState = 0;
-		ttt.OrderCreateDate = "2014Äê04ÔÂ04ÈÕ        16:08";
-		ttt.OrderCreateAddress = "³É¶¼ÊĞÌì¸³Èí¼şÔ°";
-		ttt.OrderDistince = "¾àÀë2¹«Àï";
+		ttt.OrderCreateDate = "2014å¹´04æœˆ04æ—¥       16:08";
+		ttt.OrderCreateAddress = "æˆéƒ½å¤©èµ‹è½¯ä»¶å›­AåŒº";
+		ttt.OrderDistince = "2å…¬é‡Œä»¥å†…";
 		
 		data.add(ttt);
-		ttt.OrderDistince = "¾àÀë3¹«Àï";
+		ttt.OrderDistince = "2å…¬é‡Œä»¥å†…";
 		data.add(ttt);
-		ttt.OrderDistince = "¾àÀë4¹«Àï";
+		ttt.OrderDistince = "2å…¬é‡Œä»¥å†…";
 		data.add(ttt);
-		ttt.OrderDistince = "¾àÀë5¹«Àï";
+		ttt.OrderDistince = "2å…¬é‡Œä»¥å†…";
 		data.add(ttt);
 
 		this.context = context;
@@ -52,7 +52,7 @@ public class UserOrderListAdapter extends BaseAdapter {
 		return data.get(index).OrderID;
 	}
 
-	 public final class ListItemView{                //×Ô¶¨Òå¿Ø¼ş¼¯ºÏ     
+	 public final class ListItemView{                //ï¿½Ô¶ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½     
 //         public ImageView imageIcon;     
 //         public TextView address;     
          public TextView date;   
@@ -62,13 +62,13 @@ public class UserOrderListAdapter extends BaseAdapter {
 	 
 	@Override
 	public View getView(int index, View convertView, ViewGroup parent) {
-		LayoutInflater listContainer;   //ÊÓÍ¼ÈİÆ÷¹¤³§
+		LayoutInflater listContainer;   //ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        listContainer = LayoutInflater.from(context); //´´½¨ÊÓÍ¼ÈİÆ÷¹¤³§²¢ÉèÖÃÉÏÏÂÎÄ
+        listContainer = LayoutInflater.from(context); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ListItemView  listItemView = null;   
         if (convertView == null) {
         	listItemView = new ListItemView();
-        	convertView = listContainer.inflate(R.layout.activity_user_order_listitem, null);   //´´½¨list_item.xml²¼¾ÖÎÄ¼şµÄÊÓÍ¼
+        	convertView = listContainer.inflate(R.layout.activity_user_order_listitem, null);   //ï¿½ï¿½ï¿½ï¿½list_item.xmlï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
         	listItemView.date = (TextView)convertView.findViewById(R.id.idTVUserOrderDateTime);   
         	listItemView.ivHasNewMessage = (ImageView)convertView.findViewById(R.id.idTvUserHasNewMessage);
         	convertView.setTag(listItemView);

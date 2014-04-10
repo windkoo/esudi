@@ -13,6 +13,7 @@ import android.widget.Button;
 
 public class UserSendOrderActivity extends Activity implements OnClickListener {
 	public Button btnUserCancelOrder;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class UserSendOrderActivity extends Activity implements OnClickListener {
 		ActionBar ab = getActionBar();
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("Ò»¼ü¼Ä¼þ");
+		ab.setTitle("ä¸€é”®å¯„ä»¶");
 	}
 	
 	@Override

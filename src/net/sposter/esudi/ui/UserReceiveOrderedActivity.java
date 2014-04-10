@@ -16,7 +16,7 @@ public class UserReceiveOrderedActivity extends Activity {
 		ActionBar ab = getActionBar();
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.actionbar));
-		ab.setTitle("Ò»¼ü¼Ä¼ş");
+		ab.setTitle("æŠ¢å•æˆåŠŸ");
 	}
 	
 	@Override
